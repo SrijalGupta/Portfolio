@@ -1,6 +1,6 @@
 # Srijal Gupta Portfolio
 
-A single-page React portfolio built with Vite and lightweight custom CSS. Project copy, education, skills, hackathons, and profile links live in `src/data.js`. The supplied profile photo and resume are in `public/`; the site uses reduced-motion-aware scroll reveals, a reading-progress line, an interactive theme toggle, and a small rotating JavaScript editor preview in the hero.
+A single-page React portfolio built with Vite and lightweight custom CSS. Portfolio facts live in `src/data.js`. The site includes a safe simulated terminal, searchable command palette, recruiter view, project/concept case studies, a predefined debugging challenge, and reduced-motion-aware transitions. The supplied profile photo and resume are in `public/`.
 
 ## Run locally
 
@@ -24,7 +24,9 @@ npm run preview
 - Replace `public/resume.pdf` whenever you update your resume; the resume buttons already link to that path.
 - Replace `public/srijal-gupta.jpg` to update your profile picture.
 - Add GitHub and live demo URLs to each project's `github` and `demo` properties in `src/data.js`. Empty links stay hidden.
-- To enable direct contact form submissions, create a form in Formspree and set its endpoint in `profile.formspreeEndpoint` in `src/data.js`. The form sends asynchronously and shows success or error feedback without opening the visitor's email app.
+- The contact form uses the Formspree endpoint in `profile.formspreeEndpoint` in `src/data.js`. It sends asynchronously and shows success or error feedback without opening the visitor's email app.
+- The simulated terminal accepts only predefined portfolio commands; it never evaluates shell commands or visitor-supplied code.
+- `#project/<slug>` links open a project or concept detail dialog directly.
 - Update the page title and description in `index.html` before publishing.
 
 ## Deploy free on Vercel
