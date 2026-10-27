@@ -69,9 +69,9 @@ export function Terminal({ profile, skills, education, projects, hackathons, api
     else if (verb === "education") result = { text: education.map((item) => `${item.school}\n${item.credential} · ${item.date} · ${item.result}`).join("\n\n") };
     else if (verb === "experience") result = { text: `No internships or employment roles are listed.\n\nHackathon concepts\n${hackathons.map((item) => `${item.name} — ${item.event} (${item.meta})`).join("\n")}\n\nThese are concepts, not deployed systems.` };
     else if (verb === "github") result = { text: "Open the GitHub profile:", links: [{ label: "github.com/SrijalGupta", href: profile.links.github }] };
-    else if (verb === "resume") result = { text: "Download the current resume:", links: [{ label: "resume.pdf", href: "/resume.pdf", download: true }] };
+    else if (verb === "resume") result = { text: "View or download the current resume:", links: [{ label: "View / download resume", href: "/resume.pdf" }] };
     else if (verb === "contact") result = { text: `${profile.email}\n${profile.phone}\n${profile.location}`, links: [{ label: "Go to contact form", href: "#contact" }] };
-    else if (verb === "recruiter") result = { text: `${profile.name} · CSE student · BMSIT, Bengaluru\nCGPA 9.18/10 · Expected graduation 2029\nFocus: full-stack development, applied AI, and problem-solving.\nExplore the projects, download the resume, or get in touch.`, links: [{ label: "Resume", href: "/resume.pdf", download: true }, { label: "Contact", href: "#contact" }] };
+    else if (verb === "recruiter") result = { text: `${profile.name} · CSE student · BMSIT, Bengaluru\nCGPA 9.18/10 · Expected graduation 2029\nFocus: full-stack development, applied AI, and problem-solving.\nExplore the projects, view or download the resume, or get in touch.`, links: [{ label: "View / download resume", href: "/resume.pdf" }, { label: "Contact", href: "#contact" }] };
     else if (verb === "theme") {
       if (!["light", "dark"].includes(arg)) result = { text: `Current terminal theme: ${terminalTheme}. Use “theme light” or “theme dark”.` };
       else {
@@ -87,7 +87,7 @@ export function Terminal({ profile, skills, education, projects, hackathons, api
       result = { text: "A little code rain. Back to the work in a moment…" };
     }
     else if (verb === "joke") result = { text: "Why do programmers prefer dark mode? Because light attracts bugs." };
-    else if (verb === "sudo" && arg === "hire-srijal") result = { text: "Permission granted: let's talk about the role.\nNo root access required.", links: [{ label: "Download resume", href: "/resume.pdf", download: true }, { label: "Contact Srijal", href: "#contact" }] };
+    else if (verb === "sudo" && arg === "hire-srijal") result = { text: "Permission granted: let's talk about the role.\nNo root access required.", links: [{ label: "View / download resume", href: "/resume.pdf" }, { label: "Contact Srijal", href: "#contact" }] };
     else if (verb === "sudo") result = { text: "This is a simulated portfolio terminal. Try `sudo hire-srijal`." };
     else if (verb === "pwd") result = { text: cwd };
     else if (verb === "ls") {
@@ -108,7 +108,7 @@ export function Terminal({ profile, skills, education, projects, hackathons, api
       if (["about.txt", "./about.txt"].includes(file)) result = { text: profile.about.join("\n\n") };
       else if (["contact.txt", "./contact.txt"].includes(file)) result = { text: `${profile.email}\n${profile.phone}\n${profile.location}` };
       else if (["skills.json", "./skills.json"].includes(file)) result = { text: JSON.stringify(Object.fromEntries(skills.map((group) => [group.group, group.items.map((skill) => skill.name)])), null, 2) };
-      else if (["resume.pdf", "./resume.pdf"].includes(file)) result = { text: "Resume file:", links: [{ label: "/resume.pdf", href: "/resume.pdf", download: true }] };
+      else if (["resume.pdf", "./resume.pdf"].includes(file)) result = { text: "Resume file:", links: [{ label: "View / download resume", href: "/resume.pdf" }] };
       else result = { text: "File not found. Use `ls` to see the available portfolio files." };
     }
     else {
@@ -144,7 +144,10 @@ export function Terminal({ profile, skills, education, projects, hackathons, api
         {showBoot && <div className="terminal-boot" role="status"><div><span>Initializing portfolio...</span><span>Loading developer profile... <b>[OK]</b></span><span>Preparing selected projects... <b>[OK]</b></span><strong>Welcome to my workspace.</strong></div><button type="button" onClick={dismissBoot}>Skip intro</button></div>}
         {entries.map((entry, index) => entry.kind === "command" ? <div className="terminal-command" key={`${index}-${entry.text}`}><span>srijal@portfolio</span>:<b>{cwd}</b>$ {entry.text}</div> : <div className="terminal-result" key={`${index}-${entry.text?.slice(0, 15) || "result"}`}>
           {entry.text && <pre>{entry.text}</pre>}
-          {entry.links?.length > 0 && <div className="terminal-result-links">{entry.links.map((link) => <a key={link.label} href={link.href} download={link.download} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noreferrer" : undefined}>{link.label} ↗</a>)}</div>}
+          {entry.links?.length > 0 && <div className="terminal-result-links">{entry.links.map((link) => {
+            const opensNewTab = link.href === "/resume.pdf" || link.href.startsWith("http");
+            return <a key={link.label} href={link.href} target={opensNewTab ? "_blank" : undefined} rel={opensNewTab ? "noreferrer" : undefined}>{link.label} ↗</a>;
+          })}</div>}
           {entry.buttons?.length > 0 && <div className="terminal-result-links">{entry.buttons.map((button) => <button key={button.label} type="button" onClick={button.run}>{button.label} ↗</button>)}</div>}
         </div>)}
       </div>
@@ -240,7 +243,7 @@ export function CaseStudyDialog({ item, onClose }) {
       <h3>{concept ? "Proposed concept flow" : "Architecture"}</h3><p className="case-note">{concept ? "Illustrative only — this flow describes a concept, not an implemented system." : "Architecture details are not documented yet."}</p>
       {item.architecture?.length ? <><div className="architecture-flow" aria-label={concept ? "Proposed concept flow" : "Project architecture"}>{item.architecture.map((node, index) => <React.Fragment key={node.name}><button type="button" aria-pressed={selectedNode === index} onClick={() => setSelectedNode(index)}>{node.name}</button>{index < item.architecture.length - 1 && <i aria-hidden="true">→</i>}</React.Fragment>)}</div><div className="architecture-detail"><strong>{item.architecture[selectedNode]?.name}</strong><p>{item.architecture[selectedNode]?.description}</p><small>Technology details: not specified.</small></div></> : <div className="architecture-flow pending-flow"><span>Architecture notes</span><i>→</i><span>to be added</span><small>Details pending</small></div>}
       <p className="case-note">Screenshots and implementation lessons can be added as they become available.</p>
-      <div className="case-actions">{item.github && <a href={item.github} target="_blank" rel="noreferrer">GitHub ↗</a>}{item.demo && <a href={item.demo} target="_blank" rel="noreferrer">Live demo ↗</a>}<a href="/resume.pdf" download>Resume ↓</a></div>
+      <div className="case-actions">{item.github && <a href={item.github} target="_blank" rel="noreferrer">GitHub ↗</a>}{item.demo && <a href={item.demo} target="_blank" rel="noreferrer">Live demo ↗</a>}<a href="/resume.pdf" target="_blank" rel="noreferrer">View / download resume ↗</a></div>
     </div>
   </dialog>;
 }
@@ -260,7 +263,7 @@ export function RecruiterDialog({ open, onClose, profile, education, skills }) {
     <div className="case-dialog-top"><span className="case-kicker">30-SECOND PROFILE</span><button type="button" onClick={onClose} aria-label="Close recruiter view">×</button></div>
     <div className="case-dialog-content"><p className="eyebrow">RECRUITER VIEW</p><h2>{profile.name}</h2><p className="case-summary">Second-year CSE student interested in software engineering internships, full-stack development, applied AI, and problem-solving.</p>
       <div className="case-facts"><div><h3>Education</h3><p>{currentEducation.credential}, {currentEducation.school}<br />{currentEducation.result} · Expected {currentEducation.date.split("–")[1]?.split(" ")[0]}</p></div><div><h3>Technical toolkit</h3><p>{keySkills.join("\n")}</p></div><div><h3>Selected work</h3><p>Expense Tracker · BugHunt · AI Study Buddy</p></div><div><h3>Hackathons</h3><p>Namma Raksha · P2P + EcoPrint — concepts</p></div></div>
-      <div className="case-actions"><a href="/resume.pdf" download>Download resume ↓</a><a href={profile.links.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={profile.links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a><a href="#contact" onClick={onClose}>Contact ↗</a></div>
+      <div className="case-actions"><a href="/resume.pdf" target="_blank" rel="noreferrer">View / download resume ↗</a><a href={profile.links.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={profile.links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a><a href="#contact" onClick={onClose}>Contact ↗</a></div>
     </div>
   </dialog>;
 }

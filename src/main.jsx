@@ -112,7 +112,7 @@ function SkillIcon({ name }) {
 }
 
 function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "ember");
   const [menuOpen, setMenuOpen] = useState(false);
   const [formStatus, setFormStatus] = useState("idle");
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -256,7 +256,7 @@ function App() {
         <button className="menu-toggle" aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span></span><span></span><span></span></button>
         <nav className={menuOpen ? "main-nav is-open" : "main-nav"} aria-label="Main navigation">
           {navigation.map((item) => <a key={item} href={`#${item.toLowerCase()}`} aria-current={activeSection === item.toLowerCase() ? "location" : undefined} onClick={() => setMenuOpen(false)}>{item}</a>)}
-          <a className="nav-resume" href="/resume.pdf" download>Resume <Icon name="arrow" size={14} /></a>
+          <a className="nav-resume" href="/resume.pdf" target="_blank" rel="noreferrer">Resume <Icon name="arrow" size={14} /></a>
         </nav>
         <button className="palette-trigger" type="button" onClick={() => setPaletteOpen(true)} aria-label="Search portfolio with command palette">Search <kbd>Ctrl K</kbd></button>
         <span className="nav-discovery" aria-live="polite">{visitedSections.length} explored</span>
@@ -273,7 +273,7 @@ function App() {
           <p className="location"><Icon name="pin" size={16} /> {profile.location}</p>
           <div className="hero-actions">
             <a className="button button-primary" href="#projects">View Projects <Icon name="arrow" size={16} /></a>
-            <a className="button button-quiet" href="/resume.pdf" download>Download Resume <span className="download-mark" aria-hidden="true">↓</span></a>
+            <a className="button button-quiet" href="/resume.pdf" target="_blank" rel="noreferrer">View / Download Resume <span className="download-mark" aria-hidden="true">↗</span></a>
             <a className="button button-text" href="#contact">Contact <span aria-hidden="true">↗</span></a>
             <button className="button button-text recruiter-shortcut" type="button" onClick={() => setRecruiterOpen(true)}>Recruiter view <span aria-hidden="true">↗</span></button>
           </div>

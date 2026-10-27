@@ -21,7 +21,7 @@ npm run preview
 ## Personalize
 
 - Edit the portfolio content in `src/data.js`.
-- Replace `public/resume.pdf` whenever you update your resume; the resume buttons already link to that path.
+- Replace `public/resume.pdf` whenever you update your resume; resume links open the PDF in a new tab so visitors can view it or use their browser's download option.
 - Replace `public/srijal-gupta.jpg` to update your profile picture.
 - Add GitHub and live demo URLs to each project's `github` and `demo` properties in `src/data.js`. Empty links stay hidden.
 - The contact form uses the Formspree endpoint in `profile.formspreeEndpoint` in `src/data.js`. It sends asynchronously and shows success or error feedback without opening the visitor's email app.
