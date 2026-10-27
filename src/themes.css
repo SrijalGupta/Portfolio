@@ -1,0 +1,55 @@
+/* Optional high-contrast black and orange theme. */
+html[data-theme="ember"] {
+  color-scheme: dark;
+  --bg: #090909;
+  --surface: #11110f;
+  --text: #f5f2ed;
+  --muted: #aaa49a;
+  --line: #2c2925;
+  --accent: #ff8a32;
+  --accent-soft: #2c1b0e;
+  --shadow: 0 16px 46px rgba(0, 0, 0, .38);
+  --header: rgba(9, 9, 9, .9);
+}
+
+html[data-theme="ember"] .skills-section.section-shell {
+  background: #0b0b0a;
+  color: #f5f2ed;
+  --skills-bg: #0b0b0a;
+  --skills-card: #141311;
+  --skills-ink: #f5f2ed;
+  --skills-muted: #aaa49a;
+  --skills-accent: #ff8a32;
+  --skills-border: #302b25;
+}
+
+html[data-theme="ember"] .skills-section .skill-tile:hover {
+  background: #1b1712;
+}
+
+html[data-theme="ember"] .theme-toggle {
+  border-color: #70421f;
+  color: #ff9a4d;
+}
+
+html[data-theme="ember"] .code-keyword {
+  color: #ffad67;
+}
+
+html[data-theme="ember"] .typing-cursor {
+  background-color: #ffad67;
+}
+
+html[data-theme="ember"] .code-string {
+  color: #e7bc8f;
+}
+
+html[data-theme="ember"] .portrait-live-dot,
+html[data-theme="ember"] .status-dot {
+  background: #ff9a4d;
+}
+
+html[data-theme="ember"] ::selection {
+  background: #553016;
+  color: #fff7ef;
+}

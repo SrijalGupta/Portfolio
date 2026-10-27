@@ -4,6 +4,7 @@ import { education, hackathons, navigation, profile, projects, skillFoundations,
 import { CaseStudyDialog, CommandPalette, DebugChallenge, RecruiterDialog, Terminal } from "./experience.jsx";
 import "./styles.css";
 import "./experience.css";
+import "./themes.css";
 
 const Icon = ({ name, size = 18 }) => {
   const common = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
@@ -17,6 +18,7 @@ const Icon = ({ name, size = 18 }) => {
     pin: <><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></>,
     sun: <><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></>,
     moon: <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z"/>,
+    flame: <><path d="M12 22a7 7 0 0 0 7-7c0-4-3-6-3-10-2 2-3 4-3 6-2-1-3-3-3-5-3 3-5 6-5 9a7 7 0 0 0 7 7Z"/><path d="M12 22a3 3 0 0 0 3-3c0-2-1-3-2-4-.3 1.2-1 2-2 2.5-1 .6-2 1.4-2 2.5a3 3 0 0 0 3 2Z"/></>,
     chevron: <path d="m6 9 6 6 6-6"/>,
     check: <path d="m5 12 4 4L19 6"/>,
   };
@@ -124,6 +126,7 @@ function App() {
   const [activeSection, setActiveSection] = useState("top");
   const [skillFilter, setSkillFilter] = useState("All");
   const terminalApi = useRef(null);
+  const nextTheme = theme === "light" ? "dark" : theme === "dark" ? "ember" : "light";
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("theme", theme);
@@ -257,7 +260,7 @@ function App() {
         </nav>
         <button className="palette-trigger" type="button" onClick={() => setPaletteOpen(true)} aria-label="Search portfolio with command palette">Search <kbd>Ctrl K</kbd></button>
         <span className="nav-discovery" aria-live="polite">{visitedSections.length} explored</span>
-        <button className="theme-toggle" aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`} title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`} onClick={() => setTheme(theme === "dark" ? "light" : "dark")}><Icon name={theme === "dark" ? "sun" : "moon"} size={18} /></button>
+        <button className="theme-toggle" aria-label={`Switch to ${nextTheme === "ember" ? "black and orange" : nextTheme} theme`} title={`Switch to ${nextTheme === "ember" ? "black and orange" : nextTheme} theme`} onClick={() => setTheme(nextTheme)}><Icon name={nextTheme === "ember" ? "flame" : nextTheme === "light" ? "sun" : "moon"} size={18} /></button>
       </div>
     </header>
 
