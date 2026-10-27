@@ -24,7 +24,7 @@ npm run preview
 - Replace `public/resume.pdf` whenever you update your resume; the resume buttons already link to that path.
 - Replace `public/srijal-gupta.jpg` to update your profile picture.
 - Add GitHub and live demo URLs to each project's `github` and `demo` properties in `src/data.js`. Empty links stay hidden.
-- The contact form opens the visitor's email app with a prefilled message. To collect submissions without relying on an email app, replace `sendMessage` in `src/main.jsx` with your Formspree endpoint.
+- To enable direct contact form submissions, create a form in Formspree and set its endpoint in `profile.formspreeEndpoint` in `src/data.js`. The form sends asynchronously and shows success or error feedback without opening the visitor's email app.
 - Update the page title and description in `index.html` before publishing.
 
 ## Deploy free on Vercel

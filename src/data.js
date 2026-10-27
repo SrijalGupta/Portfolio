@@ -5,6 +5,7 @@ export const profile = {
   location: "Bengaluru, India",
   email: "srijalgupta21@gmail.com",
   phone: "+91 9905573105",
+  formspreeEndpoint: "https://formspree.io/f/mkjjrplk",
   about: [
     "I’m a second-year Computer Science and Engineering student at BMS Institute of Technology & Management, Bengaluru, with a CGPA of 9.18/10.",
     "I’m building a strong foundation in programming and problem-solving while exploring full-stack development, applied AI, and competitive programming.",

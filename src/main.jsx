@@ -109,6 +109,7 @@ function SkillIcon({ name }) {
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
   const [menuOpen, setMenuOpen] = useState(false);
+  const [formStatus, setFormStatus] = useState("idle");
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("theme", theme);
@@ -159,12 +160,27 @@ function App() {
     { label: "LeetCode", href: profile.links.leetcode, icon: "leetcode" },
   ];
 
-  function sendMessage(event) {
+  async function sendMessage(event) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const subject = encodeURIComponent(`Portfolio message from ${form.get("name")}`);
-    const body = encodeURIComponent(`Name: ${form.get("name")}\nEmail: ${form.get("email")}\n\n${form.get("message")}`);
-    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+    if (!profile.formspreeEndpoint) {
+      setFormStatus("unconfigured");
+      return;
+    }
+
+    const formElement = event.currentTarget;
+    setFormStatus("sending");
+    try {
+      const response = await fetch(profile.formspreeEndpoint, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(formElement),
+      });
+      if (!response.ok) throw new Error("Form submission failed");
+      formElement.reset();
+      setFormStatus("success");
+    } catch {
+      setFormStatus("error");
+    }
   }
 
   return <>
@@ -173,7 +189,7 @@ function App() {
     <header className="site-header">
       <div className="nav-wrap">
         <a className="brand" href="#top" aria-label={`${profile.name}, home`}><span className="brand-mark">SG</span><span>Srijal Gupta<span className="brand-period">.</span></span></a>
-        <button className="menu-toggle" aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span></span><span></span></button>
+        <button className="menu-toggle" aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span></span><span></span><span></span></button>
         <nav className={menuOpen ? "main-nav is-open" : "main-nav"} aria-label="Main navigation">
           {navigation.map((item) => <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)}>{item}</a>)}
           <a className="nav-resume" href="/resume.pdf" download>Resume <Icon name="arrow" size={14} /></a>
@@ -246,7 +262,7 @@ function App() {
         <div className="hackathon-grid">{hackathons.map((item, i) => <article className="hack-card" key={item.name}><div className="hack-top"><span className="hack-number">0{i + 1} / CONCEPT</span><span className="hack-arrow" aria-hidden="true">↗</span></div><p className="hack-event">{item.event}</p><h3>{item.name}</h3><p className="hack-subtitle">{item.subtitle}</p><p className="hack-desc">{item.description}</p><div className="hack-tags">{item.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><div className="hack-meta">{item.meta}</div></article>)}</div>
       </section>
 
-      <section className="contact-section reveal" id="contact" aria-labelledby="contact-title"><div className="section-shell contact-inner"><div className="contact-copy"><p className="eyebrow"><span className="status-dot"></span> OPEN TO OPPORTUNITIES</p><h2 id="contact-title">Let’s make<br /><span>something matter.</span></h2><p>I’m interested in software engineering internships and thoughtful collaborations. Have an idea or opportunity? I’d love to hear from you.</p><a className="contact-email" href={`mailto:${profile.email}`}><Icon name="mail" size={18} /> {profile.email} <Icon name="arrow" size={15} /></a><div className="contact-details"><a href={`tel:${profile.phone.replaceAll(" ", "")}`}>{profile.phone}</a><span>·</span><span>{profile.location}</span></div><div className="contact-socials">{social.map((item) => <a key={item.label} href={item.href} target="_blank" rel="noreferrer">{item.label} <Icon name="arrow" size={13} /></a>)}</div></div><form className="contact-form" onSubmit={sendMessage}><p className="form-kicker">SEND A MESSAGE</p><label htmlFor="name">Your name</label><input id="name" name="name" type="text" autoComplete="name" required placeholder="Jane Smith" /><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="email" required placeholder="jane@example.com" /><label htmlFor="message">Message</label><textarea id="message" name="message" rows="4" required placeholder="What would you like to talk about?"></textarea><button className="button button-primary form-submit" type="submit">Open email app <Icon name="arrow" size={15} /></button><p className="form-note">This opens your email app with the message ready to send.</p></form></div></section>
+      <section className="contact-section reveal" id="contact" aria-labelledby="contact-title"><div className="section-shell contact-inner"><div className="contact-copy"><p className="eyebrow"><span className="status-dot"></span> OPEN TO OPPORTUNITIES</p><h2 id="contact-title">Let’s make<br /><span>something matter.</span></h2><p>I’m interested in software engineering internships and thoughtful collaborations. Have an idea or opportunity? I’d love to hear from you.</p><a className="contact-email" href={`mailto:${profile.email}`}><Icon name="mail" size={18} /> {profile.email} <Icon name="arrow" size={15} /></a><div className="contact-details"><a href={`tel:${profile.phone.replaceAll(" ", "")}`}>{profile.phone}</a><span>·</span><span>{profile.location}</span></div><div className="contact-socials">{social.map((item) => <a key={item.label} href={item.href} target="_blank" rel="noreferrer">{item.label} <Icon name="arrow" size={13} /></a>)}</div></div><form className="contact-form" onSubmit={sendMessage}><p className="form-kicker">SEND A MESSAGE</p><label htmlFor="name">Your name</label><input id="name" name="name" type="text" autoComplete="name" required placeholder="Jane Smith" /><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="email" required placeholder="jane@example.com" /><label htmlFor="message">Message</label><textarea id="message" name="message" rows="4" required placeholder="What would you like to talk about?" /><button className="button button-primary form-submit" type="submit" disabled={!profile.formspreeEndpoint || formStatus === "sending"}>{formStatus === "sending" ? "Sending…" : "Send message"} <Icon name="arrow" size={15} /></button><p className={`form-note ${formStatus}`} role={formStatus === "error" ? "alert" : "status"} aria-live="polite">{formStatus === "success" ? "Thanks — your message was sent." : formStatus === "error" ? "Your message could not be sent. Please try again or email me directly." : !profile.formspreeEndpoint ? "Direct sending is not configured yet. Add your Formspree endpoint in src/data.js." : formStatus === "sending" ? "Sending your message…" : "Your message will be sent directly from this form."}</p></form></div></section>
     </main>
 
     <footer className="site-footer"><div className="section-shell footer-inner"><a className="brand footer-brand" href="#top"><span className="brand-mark">SG</span><span>Srijal Gupta<span className="brand-period">.</span></span></a><p>© 2026 Srijal Prasad Gupta</p><a className="back-top" href="#top">Back to top ↑</a></div></footer>
